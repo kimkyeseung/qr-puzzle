@@ -1,8 +1,14 @@
+import { useMemo, useRef } from 'react'
 import Head from 'next/head'
 import QR from 'components/QR'
 import styles from '../styles/Home.module.css'
+import ReactTooltip from 'react-tooltip'
+import { uuid4 } from '@/lib/utils'
 
 export default function Home() {
+  const ref = useRef()
+  const gameId = useMemo(() => uuid4(), [])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -14,12 +20,14 @@ export default function Home() {
         <h1 className={styles.title}>Let's play Game!</h1>
 
         <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
+          Find the wrong <code className={styles.code}>QR code!</code>
         </p>
 
         <div className={styles.grid}>
-          <QR url="qwdjdklsdsa" />
+          <QR
+            url={`/start-game/${gameId}`}
+            data-tip="start"
+          />
         </div>
       </main>
 
@@ -33,6 +41,9 @@ export default function Home() {
           <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
         </a>
       </footer>
+      <ReactTooltip data-for="start">
+        Scan this QR Code to start Game with your phone.
+      </ReactTooltip>
     </div>
   )
 }
