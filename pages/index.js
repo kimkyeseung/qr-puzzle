@@ -25,7 +25,7 @@ export default function Home() {
 
         <div className={styles.grid}>
           <QR
-            url={`/start-game/${gameId}`}
+            url={`start/${gameId}`}
             data-tip="start"
           />
         </div>
