@@ -1,12 +1,13 @@
 import { useMemo, useRef } from 'react'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 import QR from 'components/QR'
 import styles from '../styles/Home.module.css'
-import ReactTooltip from 'react-tooltip'
 import { uuid4 } from '@/lib/utils'
 
+const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
+
 export default function Home() {
-  const ref = useRef()
   const gameId = useMemo(() => uuid4(), [])
 
   return (
@@ -24,10 +25,7 @@ export default function Home() {
         </p>
 
         <div className={styles.grid}>
-          <QR
-            url={`start/${gameId}`}
-            data-tip="start"
-          />
+          <QR url={`start/${gameId}`} data-tip="start" />
         </div>
       </main>
 
@@ -41,9 +39,9 @@ export default function Home() {
           <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
         </a>
       </footer>
-      <ReactTooltip data-for="start">
+      <Tooltip data-for="start">
         Scan this QR Code to start Game with your phone.
-      </ReactTooltip>
+      </Tooltip>
     </div>
   )
 }
