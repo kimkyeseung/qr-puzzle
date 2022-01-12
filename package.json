@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "nodemon server.js",
     "build": "next build",
-    "start": "next start -p ${PORT:=3000}"
+    "start": "NODE_ENV=production node server.js"
   },
   "dependencies": {
     "babel-plugin-styled-components": "^2.0.2",
