@@ -2,21 +2,20 @@ import { useState, useEffect, useMemo, useRef } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
-import QR from 'components/QR'
+import Main from 'components/Main'
+import Stage from 'components/Stage'
 import styles from '../styles/Home.module.css'
-import { uuid4 } from '@/lib/utils'
 
 const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
 export default function Home() {
-  const gameId = useMemo(() => uuid4(), [])
-  const [started, setStarted] = useState(false)
   const [user, setUser] = useState(null)
+  const [stage, setStage] = useState(0)
 
   useEffect(() => {
     const socket = io()
     socket.on('start', (gameId) => {
-      setStarted(true)
+      setStage(1)
       setUser({
         gameId,
         startedAt: new Date().getTime(),
@@ -36,19 +35,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>Let's play Game!</h1>
-
-        <p className={styles.description}>
-          Find the wrong <code className={styles.code}>QR code!</code>
-        </p>
-
-        <div className={styles.grid}>
-          <QR url={`start/${gameId}`} data-tip="start" />
-        </div>
-
-        {started && <div>게임을 시작합니다!</div>}
-      </main>
+      {stage === 0 ? <Main /> : <Stage stage={stage} />}
 
       <footer className={styles.footer}>
         <a

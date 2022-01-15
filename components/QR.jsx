@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import QRCode from 'qrcode'
 
-const baseUrl = typeof location !== 'undefined' ? location.host : ''
+const baseUrl = typeof location !== 'undefined' ? `http://${location.host}` : ''
 
 const QR = ({ url, ...props }) => {
   const ref = useRef()
