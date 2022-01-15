@@ -23,6 +23,14 @@ export default function Home() {
       })
     })
 
+    socket.on('submit', (correct) => {
+      if (correct === 't') {
+        console.log('correct')
+      } else {
+        console.log('wrong')
+      }
+    })
+
     return () => {
       socket.removeAllListeners('start')
     }

@@ -23,14 +23,19 @@ nextApp.prepare().then(async () => {
     })
   })
 
-  app.get('/hello', async (_, res) => {
-    res.send('Hello World')
-  })
-
   app.get('/api/start/:id', (req, res) => {
     io.emit('start', 1, 2, 3)
 
     res.send('start game')
+  })
+
+  app.get('/api/submit/:answer', (req, res) => {
+    console.log(`유저의 답은 ${req.params.answer}?!`)
+
+    const { correct } = req.query
+    io.emit('submit', correct)
+
+    res.send(`submit: ${req.params.answer}`)
   })
 
   app.all('*', (req, res) => nextHandler(req, res))
