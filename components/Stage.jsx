@@ -16,7 +16,9 @@ const Stage = ({ stage, onDevelopment }) => {
   console.log(choices)
   return (
     <StageWrapper>
-      <div className="stage-number">{stage}</div>
+      <div className="stage-number">
+        Stage: <strong>{stage}</strong>
+      </div>
       <ChoiceWrapper>
         {choices.map((choice, index) => (
           <QR
