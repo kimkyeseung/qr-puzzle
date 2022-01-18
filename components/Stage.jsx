@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import QR from 'components/QR'
 import { levelGenerator } from '@/lib/utils'
@@ -11,15 +11,41 @@ const ChoiceWrapper = styled.div`
   justify-content: space-around;
 `
 
-const Stage = ({ stage, onDevelopment }) => {
+const Stage = ({ pending, stage, onDevelopment }) => {
   const { answerIndex, choices } = levelGenerator(stage)
-  console.log(choices)
+  const [deadline, setDeadline] = useState(5)
+
+  useEffect(() => {
+    if (pending) {
+      return null
+    }
+
+    const timeoutId = setInterval(() => {
+      if (deadline) {
+        setDeadline(0)
+      } else {
+        console.log('111111111')
+        clearInterval(timeoutId)
+      }
+    }, 5000)
+    return () => clearInterval(timeoutId)
+  }, [pending, deadline])
+
+  useEffect(() => {
+    if (!deadline) {
+      console.log('done')
+    }
+  }, [deadline])
+
   return (
-    <StageWrapper>
+    <div>
+      <div className="w-full bg-gray-200 h-1">
+        <div className="bg-blue-600 w-full h-1 duration-5000 scale-x-0"></div>
+      </div>
       <h1 className="text-3xl font-bold">
         Stage: <strong>{stage}</strong>
       </h1>
-      <ChoiceWrapper>
+      <div className="flex space-around">
         {choices.map((choice, index) => (
           <QR
             key={index}
@@ -29,8 +55,8 @@ const Stage = ({ stage, onDevelopment }) => {
             })}`}
           />
         ))}
-      </ChoiceWrapper>
-    </StageWrapper>
+      </div>
+    </div>
   )
 }
 

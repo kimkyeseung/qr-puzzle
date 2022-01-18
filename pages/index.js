@@ -58,7 +58,7 @@ export default function Home() {
       {stage === 0 ? (
         <Main onDevelopment={onDevelopment} />
       ) : (
-        <Stage onDevelopment={onDevelopment} stage={stage} />
+        <Stage onDevelopment={onDevelopment} pending={pending} stage={stage} />
       )}
 
       <footer className={styles.footer}>
