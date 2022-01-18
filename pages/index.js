@@ -1,9 +1,10 @@
-import { useState, useEffect, useMemo, useRef } from 'react'
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
 import Main from 'components/Main'
 import Stage from 'components/Stage'
+import Pending from 'components/Pending'
 import styles from '../styles/Home.module.css'
 
 const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -11,11 +12,14 @@ const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 export default function Home() {
   const [user, setUser] = useState(null)
   const [stage, setStage] = useState(0)
+  const [pending, setPending] = useState(false)
+
+  const onDevelopment = process.env.NODE_ENV !== 'production'
 
   useEffect(() => {
     const socket = io()
     socket.on('start', (gameId) => {
-      setStage(1)
+      setPending(true)
       setUser({
         gameId,
         startedAt: new Date().getTime(),
@@ -36,6 +40,13 @@ export default function Home() {
     }
   }, [])
 
+  const handleStartGame = useCallback((stage = 1) => {
+    setStage(stage)
+    setTimeout(() => {
+      setPending(false)
+    }, 1000)
+  }, [])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -43,7 +54,12 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {stage === 0 ? <Main /> : <Stage stage={stage} />}
+      {pending ? <Pending handleStart={handleStartGame} /> : null}
+      {stage === 0 ? (
+        <Main onDevelopment={onDevelopment} />
+      ) : (
+        <Stage onDevelopment={onDevelopment} stage={stage} />
+      )}
 
       <footer className={styles.footer}>
         <a

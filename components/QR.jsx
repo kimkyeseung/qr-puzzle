@@ -1,22 +1,27 @@
 import React, { useRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import QRCode from 'qrcode'
+import axios from 'axios'
 
 const baseUrl = typeof location !== 'undefined' ? `http://${location.host}` : ''
 
-const QR = ({ url, ...props }) => {
+const QR = ({ url, onDevelopment, ...props }) => {
   const ref = useRef()
   const [ready, setReady] = useState(false)
 
   useEffect(() => {
-    QRCode.toCanvas(ref.current, `${baseUrl}/api/${url}`, (error) => {
+    const targetUrl = `${baseUrl}/api/${url}`
+    if (onDevelopment) {
+      ref.current.addEventListener('click', () => {
+        axios.get(targetUrl)
+      })
+    }
+    QRCode.toCanvas(ref.current, targetUrl, (error) => {
       if (error) {
         console.error(error)
       } else {
         setReady(true)
       }
-
-      console.log('success!')
     })
   }, [])
 

@@ -11,7 +11,7 @@ const ChoiceWrapper = styled.div`
   justify-content: space-around;
 `
 
-const Stage = ({ stage }) => {
+const Stage = ({ stage, onDevelopment }) => {
   const { answerIndex, choices } = levelGenerator(stage)
   console.log(choices)
   return (
@@ -21,6 +21,7 @@ const Stage = ({ stage }) => {
         {choices.map((choice, index) => (
           <QR
             key={index}
+            onDevelopment={onDevelopment}
             url={`submit/${choice}?${qs.stringify({
               correct: index === answerIndex ? 't' : 'f'
             })}`}

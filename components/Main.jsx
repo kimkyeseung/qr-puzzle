@@ -3,7 +3,7 @@ import QR from 'components/QR'
 import styles from '../styles/Home.module.css'
 import { uuid4 } from '@/lib/utils'
 
-const Main = () => {
+const Main = ({ onDevelopment }) => {
   const gameId = useMemo(() => uuid4(), [])
 
   return (
@@ -15,7 +15,11 @@ const Main = () => {
       </p>
 
       <div className={styles.grid}>
-        <QR url={`start/${gameId}`} data-tip="start" />
+        <QR
+          url={`start/${gameId}`}
+          data-tip="start"
+          onDevelopment={onDevelopment}
+        />
       </div>
     </main>
   )
