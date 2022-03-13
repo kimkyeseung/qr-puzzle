@@ -16,7 +16,8 @@ const Main = ({ onDevelopment }) => {
 
       <div className={styles.grid}>
         <QR
-          url={`start/${gameId}`}
+          url={'remote'}
+          query={{ 'game-id': gameId }}
           data-tip="start"
           onDevelopment={onDevelopment}
         />
