@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import QR from 'components/QR'
+import styles from '../styles/Home.module.css'
 import { levelGenerator } from '@/lib/utils'
 import qs from 'qs'
 
@@ -31,11 +32,11 @@ const Stage = ({ pending, stage, onDevelopment }) => {
   }, [deadline])
 
   return (
-    <div>
+    <section>
       <div className="w-full bg-gray-200 h-1">
         <div className="bg-blue-600 w-full h-1 duration-5000 scale-x-0"></div>
       </div>
-      <h1 className="text-3xl font-bold">
+      <h1 className={styles.title}>
         Stage: <strong>{stage}</strong>
       </h1>
       <div className="flex space-around">
@@ -49,7 +50,7 @@ const Stage = ({ pending, stage, onDevelopment }) => {
           />
         ))}
       </div>
-    </div>
+    </section>
   )
 }
 
