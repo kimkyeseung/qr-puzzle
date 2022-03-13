@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
 import QR from 'components/QR'
 import { levelGenerator } from '@/lib/utils'
 import qs from 'qs'
 
-const StageWrapper = styled.div``
-
-const ChoiceWrapper = styled.div`
-  display: flex;
-  justify-content: space-around;
-`
 
 const Stage = ({ pending, stage, onDevelopment }) => {
   const { answerIndex, choices } = levelGenerator(stage)

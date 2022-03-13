@@ -114,6 +114,17 @@
   height: 1em;
 }
 
+.pending {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: tomato;
+  z-index: 2;
+}
+
 @media (max-width: 600px) {
   .grid {
     width: 100%;

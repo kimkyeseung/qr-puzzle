@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styles from '../styles/Home.module.css'
 import QRCode from 'qrcode'
 import axios from 'axios'
 
@@ -26,15 +26,11 @@ const QR = ({ url, onDevelopment, ...props }) => {
   }, [])
 
   return (
-    <Wrapper {...props}>
+    <div {...props}>
       {ready || <div>LOADING...</div>}
       <canvas ref={ref}></canvas>
-    </Wrapper>
+    </div>
   )
 }
-
-const Wrapper = styled.div`
-  position: relative;
-`
 
 export default QR
