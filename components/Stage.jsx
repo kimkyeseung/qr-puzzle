@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import QR from 'components/QR'
-import styles from '../styles/Home.module.css'
+import styles from '../styles/Stage.module.css'
 import { levelGenerator } from '@/lib/utils'
-import qs from 'qs'
-
+import useSubmit from 'hooks/useSubmit'
+import { GameContext } from '../pages'
 
 const Stage = ({ pending, stage, onDevelopment }) => {
   const { answerIndex, choices } = levelGenerator(stage)
   const [deadline, setDeadline] = useState(5)
+  const { gameId } = useContext(GameContext)
+  const { handleSubmit } = useSubmit(gameId)
 
   useEffect(() => {
     if (pending) {
@@ -32,25 +34,25 @@ const Stage = ({ pending, stage, onDevelopment }) => {
   }, [deadline])
 
   return (
-    <section>
+    <main className={styles.main}>
       <div className="w-full bg-gray-200 h-1">
         <div className="bg-blue-600 w-full h-1 duration-5000 scale-x-0"></div>
       </div>
       <h1 className={styles.title}>
         Stage: <strong>{stage}</strong>
       </h1>
-      <div className="flex space-around">
+      <div className={styles.container}>
         {choices.map((choice, index) => (
           <QR
             key={index}
             onDevelopment={onDevelopment}
-            url={`submit/${choice}?${qs.stringify({
-              correct: index === answerIndex ? 't' : 'f'
-            })}`}
+            value={choice}
+            answerIndex={answerIndex}
+            handleSubmit={handleSubmit}
           />
         ))}
       </div>
-    </section>
+    </main>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
+import { createContext, useState, useEffect, useMemo, useCallback } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
@@ -6,8 +6,11 @@ import Main from 'components/Main'
 import Stage from 'components/Stage'
 import Pending from 'components/Pending'
 import styles from '../styles/Home.module.css'
+import { uuid4 } from '@/lib/utils'
 
 const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
+
+export const GameContext = createContext({ gameId: '' })
 
 export default function Home() {
   const [user, setUser] = useState(null)
@@ -15,6 +18,8 @@ export default function Home() {
   const [pending, setPending] = useState(false)
 
   const onDevelopment = process.env.NODE_ENV !== 'production'
+
+  const gameId = useMemo(() => uuid4(), [])
 
   useEffect(() => {
     const socket = io()
@@ -48,18 +53,25 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="h-screen flex flex-column items-center bg-green">
+    <div className={styles.container}>
       <Head>
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {pending ? <Pending handleStart={handleStartGame} /> : null}
-      {stage === 0 ? (
-        <Main onDevelopment={onDevelopment} />
-      ) : (
-        <Stage onDevelopment={onDevelopment} pending={pending} stage={stage} />
-      )}
+
+      <GameContext.Provider value={{ gameId }}>
+        {stage === 0 ? (
+          <Main onDevelopment={onDevelopment} gameId={gameId} />
+        ) : (
+          <Stage
+            onDevelopment={onDevelopment}
+            pending={pending}
+            stage={stage}
+          />
+        )}
+      </GameContext.Provider>
 
       <footer className={styles.footer}>
         <a

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useCallback } from 'react'
+import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
 import styles from '../styles/Home.module.css'
 import QRCode from 'qrcode'
 import qs from 'qs'
@@ -6,13 +6,23 @@ import axios from 'axios'
 
 const baseUrl = typeof location !== 'undefined' ? `http://${location.host}` : ''
 
-const QR = ({ url, query, onDevelopment, ...props }) => {
+const QR = ({
+  url,
+  query,
+  onDevelopment,
+  value,
+  answerIndex,
+  handleSubmit,
+  ...props
+}) => {
   const ref = useRef()
   const [ready, setReady] = useState(false)
 
+  const qr = useMemo(() => (url ? `${baseUrl}/${url}` : String(value)), [])
+  const qrType = useMemo(() => (url ? 'url' : 'choice'), [url])
+
   useEffect(() => {
-    const targetUrl = `${baseUrl}/${url}`
-    QRCode.toCanvas(ref.current, targetUrl, (error) => {
+    QRCode.toCanvas(ref.current, qr, (error) => {
       if (error) {
         console.error(error)
       } else {
@@ -23,7 +33,9 @@ const QR = ({ url, query, onDevelopment, ...props }) => {
 
   const handleClick = useCallback(() => {
     if (onDevelopment) {
-      window.open(`${baseUrl}/${url}?${qs.stringify(query)}`)
+      qrType === 'url'
+        ? window.open(`${baseUrl}/${url}?${qs.stringify(query)}`)
+        : handleSubmit(value)
     }
   }, [url])
 

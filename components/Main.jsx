@@ -1,10 +1,8 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import QR from 'components/QR'
 import styles from '../styles/Home.module.css'
-import { uuid4 } from '@/lib/utils'
 
-const Main = ({ onDevelopment }) => {
-  const gameId = useMemo(() => uuid4(), [])
+const Main = ({ onDevelopment, gameId }) => {
 
   return (
     <main className={styles.main}>

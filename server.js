@@ -2,7 +2,7 @@ const express = require('express')
 const http = require('http')
 const next = require('next')
 const socketio = require('socket.io')
-
+const bodyParser = require('body-parser')
 const port = parseInt(process.env.PORT || '3000', 10)
 const dev = process.env.NODE_ENV !== 'production'
 const nextApp = next({ dev })
@@ -23,19 +23,21 @@ nextApp.prepare().then(async () => {
     })
   })
 
+  app.use(bodyParser.urlencoded({ extended: false }))
+  app.use(bodyParser.json())
+
   app.get('/api/start/:id', (req, res) => {
     io.emit('start', 1, 2, 3)
 
     res.send('start game')
   })
 
-  app.get('/api/submit/:answer', (req, res) => {
-    console.log(`유저의 답은 ${req.params.answer}?!`)
+  app.post('/api/submit', (req, res) => {
+    console.log(`유저의 답은 ${(req.body.gameId, req.body.choice)}?!`)
 
-    const { correct } = req.query
-    io.emit('submit', correct)
+    io.emit('submit', req.body.choice)
 
-    res.send(`submit: ${req.params.answer}`)
+    res.send(`submit: ${req.body.choice}`)
   })
 
   app.all('*', (req, res) => nextHandler(req, res))
