@@ -33,11 +33,12 @@ nextApp.prepare().then(async () => {
   })
 
   app.post('/api/submit', (req, res) => {
-    console.log(`유저의 답은 ${(req.body.gameId, req.body.choice)}?!`)
+    const { gameId, choice, isCorrect } = req.body
+    console.log(`유저의 답은 ${(gameId, choice)}?!`)
 
-    io.emit('submit', req.body.choice)
+    io.emit(isCorrect ? 'correct-answer' : 'wrong-answer', choice)
 
-    res.send(`submit: ${req.body.choice}`)
+    res.send(`submit: ${choice}`)
   })
 
   app.all('*', (req, res) => nextHandler(req, res))

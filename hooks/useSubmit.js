@@ -3,7 +3,7 @@ import axios from 'axios'
 
 const useSubmit = (gameId) => {
   const handleSubmit = useCallback(
-    (choice) => axios.post(`/api/submit`, { gameId, choice }),
+    (choice, isCorrect) => axios.post(`/api/submit`, { gameId, choice, isCorrect }),
     []
   )
 

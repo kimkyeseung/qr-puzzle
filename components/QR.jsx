@@ -11,7 +11,7 @@ const QR = ({
   query,
   onDevelopment,
   value,
-  answerIndex,
+  isCorrect,
   handleSubmit,
   ...props
 }) => {
@@ -35,7 +35,7 @@ const QR = ({
     if (onDevelopment) {
       qrType === 'url'
         ? window.open(`${baseUrl}/${url}?${qs.stringify(query)}`)
-        : handleSubmit(value)
+        : handleSubmit(value, isCorrect)
     }
   }, [url])
 

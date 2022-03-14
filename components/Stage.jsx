@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { io } from 'socket.io-client'
 import QR from 'components/QR'
 import styles from '../styles/Stage.module.css'
 import { levelGenerator } from '@/lib/utils'
@@ -33,6 +34,22 @@ const Stage = ({ pending, stage, onDevelopment }) => {
     }
   }, [deadline])
 
+  
+  useEffect(() => {
+    const socket = io()
+    socket.on('wrong-answer', () => {
+      console.log('wrong-answer')
+    })
+
+    socket.on('correct-answer', () => {
+      console.log('correct-answer')
+    })
+
+    return () => {
+      socket.removeAllListeners()
+    }
+  }, [stage])
+
   return (
     <main className={styles.main}>
       <div className="w-full bg-gray-200 h-1">
@@ -47,7 +64,7 @@ const Stage = ({ pending, stage, onDevelopment }) => {
             key={index}
             onDevelopment={onDevelopment}
             value={choice}
-            answerIndex={answerIndex}
+            isCorrect={answerIndex === index}
             handleSubmit={handleSubmit}
           />
         ))}
