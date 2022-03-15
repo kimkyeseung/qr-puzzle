@@ -6,6 +6,7 @@ import Main from 'components/Main'
 import Stage from 'components/Stage'
 import Pending from 'components/Pending'
 import styles from '../styles/Home.module.css'
+import generator from '@/lib/levelGenerator'
 import { uuid4 } from '@/lib/utils'
 
 const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -18,6 +19,11 @@ export default function Home() {
   const [pending, setPending] = useState(false)
 
   const onDevelopment = process.env.NODE_ENV !== 'production'
+
+  const levelGenerator = generator()
+
+  const { level, timeLimit, isSpeedUp, optionCount, answerIndex, options } =
+    levelGenerator.next()
 
   const gameId = useMemo(() => uuid4(), [])
 
@@ -58,6 +64,7 @@ export default function Home() {
           <Main onDevelopment={onDevelopment} gameId={gameId} />
         ) : (
           <Stage
+            levelGenerator={levelGenerator}
             onDevelopment={onDevelopment}
             pending={pending}
             stage={stage}

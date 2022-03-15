@@ -2,12 +2,10 @@ import React, { useState, useEffect, useContext } from 'react'
 import { io } from 'socket.io-client'
 import QR from 'components/QR'
 import styles from '../styles/Stage.module.css'
-import { levelGenerator } from '@/lib/utils'
 import useSubmit from 'hooks/useSubmit'
 import { GameContext } from '../pages'
 
-const Stage = ({ pending, stage, onDevelopment }) => {
-  const { answerIndex, choices } = levelGenerator(stage)
+const Stage = ({ pending, stage, onDevelopment, levelGenerator }) => {
   const [deadline, setDeadline] = useState(5)
   const { gameId } = useContext(GameContext)
   const { handleSubmit } = useSubmit(gameId)
@@ -34,7 +32,6 @@ const Stage = ({ pending, stage, onDevelopment }) => {
     }
   }, [deadline])
 
-  
   useEffect(() => {
     const socket = io()
     socket.on('wrong-answer', () => {
