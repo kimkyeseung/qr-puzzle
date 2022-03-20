@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import QR from 'components/QR'
+import { GameContext } from '../pages/index'
 import styles from '../styles/Home.module.css'
 
-const Main = ({ onDevelopment, gameId }) => {
+const Main = () => {
+  const { onDevelopment, gameId } = useContext(GameContext)
 
   return (
     <main className={styles.main}>

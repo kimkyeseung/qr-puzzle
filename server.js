@@ -27,7 +27,7 @@ nextApp.prepare().then(async () => {
   app.use(bodyParser.json())
 
   app.get('/api/start/:id', (req, res) => {
-    io.emit('start', 1, 2, 3)
+    io.emit('start', req.params.id)
 
     res.send('start game')
   })

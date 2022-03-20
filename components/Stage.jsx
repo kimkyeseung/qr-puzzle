@@ -3,17 +3,21 @@ import { io } from 'socket.io-client'
 import QR from 'components/QR'
 import styles from '../styles/Stage.module.css'
 import useSubmit from 'hooks/useSubmit'
-import { GameContext } from '../pages'
+import { GameContext } from '../pages/index'
 
-const Stage = ({ pending, stage, onDevelopment, levelGenerator }) => {
+const Stage = ({
+  level,
+  timeLimit,
+  isSpeedUp,
+  optionCount,
+  answerIndex,
+  options
+}) => {
   const [deadline, setDeadline] = useState(5)
-  const { gameId } = useContext(GameContext)
+  const { gameId, onDevelopment } = useContext(GameContext)
   const { handleSubmit } = useSubmit(gameId)
 
   useEffect(() => {
-    if (pending) {
-      return null
-    }
 
     const timeoutId = setInterval(() => {
       if (deadline) {
@@ -24,7 +28,7 @@ const Stage = ({ pending, stage, onDevelopment, levelGenerator }) => {
       }
     }, 5000)
     return () => clearInterval(timeoutId)
-  }, [pending, deadline])
+  }, [deadline])
 
   useEffect(() => {
     if (!deadline) {
@@ -45,7 +49,7 @@ const Stage = ({ pending, stage, onDevelopment, levelGenerator }) => {
     return () => {
       socket.removeAllListeners()
     }
-  }, [stage])
+  }, [level])
 
   return (
     <main className={styles.main}>
@@ -53,14 +57,14 @@ const Stage = ({ pending, stage, onDevelopment, levelGenerator }) => {
         <div className="bg-blue-600 w-full h-1 duration-5000 scale-x-0"></div>
       </div>
       <h1 className={styles.title}>
-        Stage: <strong>{stage}</strong>
+        Stage: <strong>{level}</strong>
       </h1>
       <div className={styles.container}>
-        {choices.map((choice, index) => (
+        {options.map((option, index) => (
           <QR
             key={index}
             onDevelopment={onDevelopment}
-            value={choice}
+            value={option}
             isCorrect={answerIndex === index}
             handleSubmit={handleSubmit}
           />

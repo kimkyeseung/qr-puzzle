@@ -9,7 +9,9 @@ export default function Remote() {
 
   useEffect(() => {
     const gameId = router.query['game-id']
-    axios.get(`/api/start/${gameId}`)
+    if (gameId) {
+      axios.get(`/api/start/${gameId}`)
+    }
   }, [router.query])
 
   return <div>this is remote</div>
