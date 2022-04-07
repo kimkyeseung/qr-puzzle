@@ -11,12 +11,12 @@ import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
 import Main from 'components/Main'
 import Stage from 'components/Stage'
-import Pending from 'components/Pending'
-import PendingPrepare from 'components/pending/Prepare'
+import Ready from 'components/pending/Ready'
 import styles from '../styles/Home.module.css'
 import generator from '@/lib/levelGenerator'
 import { uuid4 } from '@/lib/utils'
 import useDelay from 'hooks/useDelay'
+import useActionQueue from 'hooks/useActionQueue'
 
 const levelGenerator = generator()
 
@@ -34,12 +34,17 @@ const initialState = {
     life: 3
   },
   pending: {},
-  status: 'ready'
+  status: 'main'
 }
 
 const reducer = (state, action) => {
-  console.log('reducer work', action.type)
   switch (action.type) {
+    case 'READY':
+      return {
+        ...state,
+        status: 'ready',
+      }
+
     case 'START_GAME':
       return {
         ...state,
@@ -92,14 +97,18 @@ const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
 const Home = () => {
   const gameId = useMemo(() => uuid4(), [])
-
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useActionQueue(reducer, initialState)
   const { game, user, status, pending } = state
-  const { delayDispatch } = useDelay(dispatch)
+
+  // const handleStartGame = useCallback(() => {
+  //   dispatch({ type: 'SET_PENDING', pendingType: 'prepare', pendingTime: 5000 })
+  //   console.log('pending time', pending.pendingTime)
+  //   // delayDispatch({ type: 'START_GAME' }, pending.pendingTime)
+  // }, [pending.pendingTime])
 
   const handleStartGame = useCallback(() => {
-    dispatch({ type: 'SET_PENDING', pendingType: 'prepare', pendingTime: 3000 })
-    delayDispatch({ type: 'START_GAME' }, 3000)
+    dispatch({ type: 'ready', delay: 3000 })
+    dispatch({ type: 'playing' })
   }, [])
 
   useEffect(() => {
@@ -122,21 +131,15 @@ const Home = () => {
 
       <GameContext.Provider value={{ gameId, state, onDevelopment }}>
         {(() => {
+          console.log('status', status)
           switch (status) {
-            case 'ready':
+            case 'main':
               return <Main />
-            case 'pending':
-              switch (pending.type) {
-                case 'prepare':
-                  return (
-                    <PendingPrepare count={Math.ceil(pending.time / 1000)} />
-                  )
-                case 'speed-up':
-                case 'correct-answer':
-                case 'wrong-answer':
-                default:
-                  return <Pending pending={pending} />
-              }
+            case 'ready':
+              ;<Ready count={Math.ceil(pending.time / 1000)} />
+            case 'speed-up':
+            case 'correct-answer':
+            case 'wrong-answer':
             case 'playing':
               return (
                 <Stage

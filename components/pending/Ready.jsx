@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from 'styles/Home.module.css'
 
-const Prepare = ({ count: countProp = 3 }) => {
+const Ready = ({ count: countProp = 3 }) => {
   const [count, setCount] = useState(countProp)
   const countDownToStart = () => {
     setTimeout(() => {
@@ -20,4 +20,4 @@ const Prepare = ({ count: countProp = 3 }) => {
   )
 }
 
-export default Prepare
+export default Ready

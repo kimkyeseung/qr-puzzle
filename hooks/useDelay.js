@@ -1,13 +1,13 @@
 import { useCallback } from 'react'
 
-const useDelay = (dispatch) => {
+const useDelay = (dispatch, queue) => {
   const delayDispatch = useCallback(
     (action, delayTime = 1000) => {
       setTimeout(() => {
         dispatch(action)
       }, delayTime)
     },
-    [dispatch]
+    [dispatch, queue]
   )
 
   return { delayDispatch }
