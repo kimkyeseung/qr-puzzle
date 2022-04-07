@@ -15,7 +15,6 @@ import Ready from 'components/pending/Ready'
 import styles from '../styles/Home.module.css'
 import generator from '@/lib/levelGenerator'
 import { uuid4 } from '@/lib/utils'
-import useDelay from 'hooks/useDelay'
 import useActionQueue from 'hooks/useActionQueue'
 
 const levelGenerator = generator()
@@ -100,12 +99,6 @@ const Home = () => {
   const [state, dispatch] = useActionQueue(reducer, initialState)
   const { game, user, status, pending } = state
 
-  // const handleStartGame = useCallback(() => {
-  //   dispatch({ type: 'SET_PENDING', pendingType: 'prepare', pendingTime: 5000 })
-  //   console.log('pending time', pending.pendingTime)
-  //   // delayDispatch({ type: 'START_GAME' }, pending.pendingTime)
-  // }, [pending.pendingTime])
-
   const handleStartGame = useCallback(() => {
     dispatch({ type: 'ready', delay: 3000 })
     dispatch({ type: 'playing' })
@@ -136,7 +129,7 @@ const Home = () => {
             case 'main':
               return <Main />
             case 'ready':
-              ;<Ready count={Math.ceil(pending.time / 1000)} />
+              <Ready count={Math.ceil(pending.time / 1000)} />
             case 'speed-up':
             case 'correct-answer':
             case 'wrong-answer':

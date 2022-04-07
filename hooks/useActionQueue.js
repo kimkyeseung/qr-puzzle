@@ -1,19 +1,22 @@
-import { useCallback, useEffect, useReducer, useMemo } from 'react'
+import { useState, useCallback, useEffect, useReducer } from 'react'
 
 const useActionQueue = (reducer, initialState) => {
-  // dispatchQueue를 실행하면 queue에 action을 넣는다. 
-  // 큐에 넣으면 실행? 큐에 넣고 delay 후 실행?
-  useEffect(() => {
-    const queue = []
-  }, [])
-
+  const [queue, setQueue] = useState([])
   const [state, dispatch] = useReducer(reducer, initialState)
 
-  const dispatchQueue = useCallback(
-    (action, delayTime = 1000) => {
+  useEffect(() => {
+    const action = queue[0]
+    if (action) {
       setTimeout(() => {
         dispatch(action)
-      }, delayTime)
+        setQueue(queue.slice(1))
+      }, action.delay || 0)
+    }
+  }, [queue])
+
+  const dispatchQueue = useCallback(
+    (action) => {
+      setQueue((queue) => [...queue, action])
     },
     [dispatch]
   )
