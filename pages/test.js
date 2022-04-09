@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import useActionQueue from 'hooks/useActionQueue'
 
 const initialState = {
@@ -26,18 +26,26 @@ export default function TestPage() {
     setLog([...log, { status: state.status, time: new Date().getSeconds() }])
   }, [state])
 
+  const addAction = useCallback(() => {
+    dispatch({ type: 'READY', delay: 1000 })
+    dispatch({ type: 'START_GAME' })
+  }, [])
+
   useEffect(() => {
     dispatch({ type: 'READY' })
-    dispatch({ type: 'START_GAME', delay: 3000 })
+    dispatch({ type: 'START_GAME' })
     dispatch({ type: 'SET_NEXT_LEVEL' })
-    dispatch({ type: 'SET_PLAYING', delay: 3000 })
+    dispatch({ type: 'SET_PLAYING' })
   }, [])
 
   return (
     <div>
       {log.map((l, i) => (
-        <div key={i}>{l.status} {l.time}</div>
+        <div key={i}>
+          {l.status} {l.time}
+        </div>
       ))}
+      <button onClick={addAction}>add action</button>
     </div>
   )
 }

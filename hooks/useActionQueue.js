@@ -1,18 +1,21 @@
-import { useState, useCallback, useEffect, useReducer } from 'react'
+import { useState, useCallback, useEffect, useReducer, useMemo } from 'react'
 
 const useActionQueue = (reducer, initialState) => {
   const [queue, setQueue] = useState([])
+  const [pending, setPending] = useState(false)
   const [state, dispatch] = useReducer(reducer, initialState)
 
   useEffect(() => {
     const action = queue[0]
-    if (action) {
+    if (action && pending === false) {
+      setPending(true)
       setTimeout(() => {
         dispatch(action)
-        setQueue(queue.slice(1))
+        setQueue((queue) => queue.slice(1))
+        setPending(false)
       }, action.delay || 0)
     }
-  }, [queue])
+  }, [queue, pending])
 
   const dispatchQueue = useCallback(
     (action) => {
