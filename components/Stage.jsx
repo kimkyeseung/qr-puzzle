@@ -11,14 +11,15 @@ const Stage = ({
   isSpeedUp,
   optionCount,
   answerIndex,
-  options
+  options,
+  handleCorrect,
+  handleWrong
 }) => {
   const [deadline, setDeadline] = useState(5)
   const { gameId, onDevelopment } = useContext(GameContext)
   const { handleSubmit } = useSubmit(gameId)
 
   useEffect(() => {
-
     const timeoutId = setInterval(() => {
       if (deadline) {
         setDeadline(0)
@@ -38,13 +39,9 @@ const Stage = ({
 
   useEffect(() => {
     const socket = io()
-    socket.on('wrong-answer', () => {
-      console.log('wrong-answer')
-    })
+    socket.on('wrong-answer', handleWrong)
 
-    socket.on('correct-answer', () => {
-      console.log('correct-answer')
-    })
+    socket.on('correct-answer', handleCorrect)
 
     return () => {
       socket.removeAllListeners()

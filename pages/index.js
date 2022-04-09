@@ -17,6 +17,13 @@ import generator from '@/lib/levelGenerator'
 import { uuid4 } from '@/lib/utils'
 import useActionQueue from 'hooks/useActionQueue'
 
+export const READY = 'READY'
+export const START_GAME = 'START_GAME'
+export const SET_NEXT_LEVEL = 'SET_NEXT_LEVEL'
+export const CORRECT_ANSWER = 'CORRECT_ANSWER'
+export const WRONG_ANSWER = 'WRONG_ANSWER'
+export const INITIALIZE_GAME = 'INITIALIZE_GAME'
+
 const levelGenerator = generator()
 
 const initialState = {
@@ -32,19 +39,20 @@ const initialState = {
     startedAt: null,
     life: 3
   },
-  pending: {},
+  delay: 0,
   status: 'main'
 }
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'READY':
+    case READY:
       return {
         ...state,
         status: 'ready',
+        delay: action.delay
       }
 
-    case 'START_GAME':
+    case START_GAME:
       return {
         ...state,
         status: 'playing',
@@ -57,24 +65,28 @@ const reducer = (state, action) => {
           ...levelGenerator.next().value
         }
       }
-    case 'SET_NEXT_LEVEL':
+    case CORRECT_ANSWER:
       return {
         ...state,
+        status: 'correct-answer',
+        delay: action.delay
+      }
+    case WRONG_ANSWER:
+      return {
+        ...state,
+        status: 'wrong-answer',
+        delay: action.delay
+      }
+    case SET_NEXT_LEVEL:
+      return {
+        ...state,
+        status: 'playing',
         game: {
           ...state.game,
-          level: action.gameLevel
+          ...levelGenerator.next().value
         }
       }
-    case 'SET_PENDING':
-      return {
-        ...state,
-        status: 'pending',
-        pending: {
-          type: action.pendingType,
-          time: action.pendingTime
-        }
-      }
-    case 'INITIALIZE_GAME':
+    case INITIALIZE_GAME:
       return {
         ...state,
         status: 'ready'
@@ -97,11 +109,11 @@ const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 const Home = () => {
   const gameId = useMemo(() => uuid4(), [])
   const [state, dispatch] = useActionQueue(reducer, initialState)
-  const { game, user, status, pending } = state
+  const { game, user, status, delay } = state
 
   const handleStartGame = useCallback(() => {
-    dispatch({ type: 'ready', delay: 3000 })
-    dispatch({ type: 'playing' })
+    dispatch({ type: READY, delay: 3000 })
+    dispatch({ type: START_GAME })
   }, [])
 
   useEffect(() => {
@@ -115,6 +127,16 @@ const Home = () => {
     }
   }, [])
 
+  const handleCorrectAnswer = useCallback(() => {
+    dispatch({ type: CORRECT_ANSWER, delay: 2000 })
+    dispatch({ type: SET_NEXT_LEVEL })
+  }, [])
+
+  const handleWrongAnswer = useCallback(() => {
+    dispatch({ type: WRONG_ANSWER, delay: 2000 })
+    dispatch({ type: SET_NEXT_LEVEL })
+  }, [])
+
   return (
     <div className={styles.container}>
       <Head>
@@ -124,15 +146,17 @@ const Home = () => {
 
       <GameContext.Provider value={{ gameId, state, onDevelopment }}>
         {(() => {
-          console.log('status', status)
           switch (status) {
             case 'main':
               return <Main />
             case 'ready':
-              <Ready count={Math.ceil(pending.time / 1000)} />
+              return <Ready count={Math.ceil(delay / 1000)} />
             case 'speed-up':
+              return <Ready count={Math.ceil(delay / 1000)} />
             case 'correct-answer':
+              return <Ready count={Math.ceil(delay / 1000)} />
             case 'wrong-answer':
+              return <Ready count={Math.ceil(delay / 1000)} />
             case 'playing':
               return (
                 <Stage
@@ -142,6 +166,8 @@ const Home = () => {
                   optionCount={game.optionCount}
                   answerIndex={game.answerIndex}
                   options={game.options}
+                  handleCorrect={handleCorrectAnswer}
+                  handleWrong={handleWrongAnswer}
                 />
               )
             case 'over':
