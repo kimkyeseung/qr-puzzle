@@ -9,8 +9,8 @@ const useActionQueue = (reducer, initialState) => {
     const action = queue[0]
     if (action && pending === false) {
       setPending(true)
+      dispatch(action)
       setTimeout(() => {
-        dispatch(action)
         setQueue((queue) => queue.slice(1))
         setPending(false)
       }, action.delay || 0)
