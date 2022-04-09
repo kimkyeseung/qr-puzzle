@@ -1,7 +1,5 @@
 import {
   createContext,
-  useReducer,
-  useState,
   useEffect,
   useMemo,
   useCallback
@@ -11,6 +9,7 @@ import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
 import Main from 'components/Main'
 import Stage from 'components/Stage'
+import AnswerResult from 'components/pending/AnswerResult'
 import Ready from 'components/pending/Ready'
 import styles from '../styles/Home.module.css'
 import generator from '@/lib/levelGenerator'
@@ -154,9 +153,9 @@ const Home = () => {
             case 'speed-up':
               return <Ready count={Math.ceil(delay / 1000)} />
             case 'correct-answer':
-              return <Ready count={Math.ceil(delay / 1000)} />
+              return <AnswerResult type="correct" />
             case 'wrong-answer':
-              return <Ready count={Math.ceil(delay / 1000)} />
+              return <AnswerResult type="wrong" />
             case 'playing':
               return (
                 <Stage
