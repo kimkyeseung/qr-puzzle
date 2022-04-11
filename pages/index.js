@@ -1,9 +1,4 @@
-import {
-  createContext,
-  useEffect,
-  useMemo,
-  useCallback
-} from 'react'
+import { createContext, useEffect, useMemo, useCallback } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import { io } from 'socket.io-client'
@@ -15,6 +10,7 @@ import styles from '../styles/Home.module.css'
 import generator from '@/lib/levelGenerator'
 import { uuid4 } from '@/lib/utils'
 import useActionQueue from 'hooks/useActionQueue'
+import LifePoints from '@/components/LifePoints'
 
 export const READY = 'READY'
 export const START_GAME = 'START_GAME'
@@ -22,6 +18,8 @@ export const SET_NEXT_LEVEL = 'SET_NEXT_LEVEL'
 export const CORRECT_ANSWER = 'CORRECT_ANSWER'
 export const WRONG_ANSWER = 'WRONG_ANSWER'
 export const INITIALIZE_GAME = 'INITIALIZE_GAME'
+
+const DEFAULT_LIFE = 3
 
 const levelGenerator = generator()
 
@@ -34,10 +32,8 @@ const initialState = {
     answerIndex: null,
     options: []
   },
-  user: {
-    startedAt: null,
-    life: 3
-  },
+  startedAt: null,
+  life: 3,
   delay: 0,
   status: 'main'
 }
@@ -55,10 +51,8 @@ const reducer = (state, action) => {
       return {
         ...state,
         status: 'playing',
-        user: {
-          ...state.user,
-          startedAt: Date.now()
-        },
+        startedAt: Date.now(),
+        life: DEFAULT_LIFE,
         game: {
           ...state.game,
           ...levelGenerator.next().value
@@ -108,7 +102,7 @@ const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 const Home = () => {
   const gameId = useMemo(() => uuid4(), [])
   const [state, dispatch] = useActionQueue(reducer, initialState)
-  const { game, user, status, delay } = state
+  const { game, life, status, delay } = state
 
   const handleStartGame = useCallback(() => {
     dispatch({ type: READY, delay: 3000 })
@@ -142,6 +136,8 @@ const Home = () => {
         <title>Create Next App</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
+      {!['main', 'over'].includes(status) && <LifePoints remain={life} />}
 
       <GameContext.Provider value={{ gameId, state, onDevelopment }}>
         {(() => {

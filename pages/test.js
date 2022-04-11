@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import useActionQueue from 'hooks/useActionQueue'
+import LifePoints from '@/components/LifePoints'
+import styles from 'styles/Home.module.css'
 
 const initialState = {
   status: 'main'
@@ -39,13 +41,15 @@ export default function TestPage() {
   }, [])
 
   return (
-    <div>
-      {log.map((l, i) => (
+    <div className={styles.container}>
+      {/* {log.map((l, i) => (
         <div key={i}>
           {l.status} {l.time}
         </div>
       ))}
-      <button onClick={addAction}>add action</button>
+      <button onClick={addAction}>add action</button> */}
+
+      <LifePoints remain={3} />
     </div>
   )
 }
