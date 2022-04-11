@@ -22,6 +22,7 @@ const reducer = (state, action) => {
 
 export default function TestPage() {
   const [log, setLog] = useState([])
+  const [life, setLife] = useState(3)
   const [state, dispatch] = useActionQueue(reducer, initialState)
 
   useEffect(() => {
@@ -40,6 +41,10 @@ export default function TestPage() {
     dispatch({ type: 'SET_PLAYING' })
   }, [])
 
+  const loseLife = useCallback(() => {
+    setLife((life) => life - 1)
+  }, [])
+
   return (
     <div className={styles.container}>
       {/* {log.map((l, i) => (
@@ -47,9 +52,9 @@ export default function TestPage() {
           {l.status} {l.time}
         </div>
       ))}
-      <button onClick={addAction}>add action</button> */}
-
-      <LifePoints remain={3} />
+ */}
+      <LifePoints remain={life} />
+      <button onClick={loseLife}>life - 1</button>
     </div>
   )
 }

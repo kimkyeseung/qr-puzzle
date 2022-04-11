@@ -9,22 +9,39 @@
 }
 
 .life {
+  display: flex;
+  align-items: baseline;
   position: absolute;
   top: 12vh;
   left: 12vw;
   z-index: 10;
   font-size: 4rem;
-  letter-spacing: 0.5rem;
+  letter-spacing: 0.3rem;
   font-family: 'Raleway', sans-serif;
   text-transform: uppercase;
   padding-bottom: 4vh;
   border-bottom: 1px solid #222;
 }
 
-.life strong {
+.life ul {
   font-size: 6rem;
-  letter-spacing: -0.5rem;
+  letter-spacing: -0.3rem;
   font-family: 'Righteous', cursive;
+  overflow: hidden;
+  height: 120px;
+}
+
+.life li {
+  font-size: 6rem;
+  letter-spacing: -0.3rem;
+  font-family: 'Righteous', cursive;
+  overflow: hidden;
+  height: 120px;
+  padding: 0 40px;
+}
+
+.life li::before {
+  content: '0';
 }
 
 .main {
@@ -145,6 +162,8 @@
   align-items: center;
   background-color: tomato;
   z-index: 2;
+  font-size: 20rem;
+  font-family: 'Righteous', cursive;
 }
 
 @media (max-width: 600px) {

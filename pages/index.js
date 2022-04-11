@@ -65,11 +65,14 @@ const reducer = (state, action) => {
         delay: action.delay
       }
     case WRONG_ANSWER:
-      return {
-        ...state,
-        status: 'wrong-answer',
-        delay: action.delay
-      }
+      return state.life - 1
+        ? {
+            ...state,
+            status: 'wrong-answer',
+            life: state.life - 1,
+            delay: action.delay
+          }
+        : { ...state, status: 'over', life: 0, delay: action.delay }
     case SET_NEXT_LEVEL:
       return {
         ...state,
