@@ -5,6 +5,7 @@ import { io } from 'socket.io-client'
 import Main from 'components/Main'
 import Stage from 'components/Stage'
 import AnswerResult from 'components/pending/AnswerResult'
+import GameOver from 'components/GameOver'
 import Ready from 'components/pending/Ready'
 import styles from '../styles/Home.module.css'
 import generator from '@/lib/levelGenerator'
@@ -33,6 +34,7 @@ const initialState = {
     options: []
   },
   startedAt: null,
+  endedAt: null,
   life: 3,
   delay: 0,
   status: 'main'
@@ -65,23 +67,23 @@ const reducer = (state, action) => {
         delay: action.delay
       }
     case WRONG_ANSWER:
-      return state.life - 1
-        ? {
-            ...state,
-            status: 'wrong-answer',
-            life: state.life - 1,
-            delay: action.delay
-          }
-        : { ...state, status: 'over', life: 0, delay: action.delay }
-    case SET_NEXT_LEVEL:
       return {
         ...state,
-        status: 'playing',
-        game: {
-          ...state.game,
-          ...levelGenerator.next().value
-        }
+        status: 'wrong-answer',
+        life: state.life - 1,
+        delay: action.delay
       }
+    case SET_NEXT_LEVEL:
+      return state.life
+        ? {
+            ...state,
+            status: 'playing',
+            game: {
+              ...state.game,
+              ...levelGenerator.next().value
+            }
+          }
+        : { ...state, status: 'over', life: 0, delay: action.delay }
     case INITIALIZE_GAME:
       return {
         ...state,
@@ -128,10 +130,14 @@ const Home = () => {
     dispatch({ type: SET_NEXT_LEVEL })
   }, [])
 
-  const handleWrongAnswer = useCallback(() => {
-    dispatch({ type: WRONG_ANSWER, delay: 2000 })
-    dispatch({ type: SET_NEXT_LEVEL })
-  }, [])
+  const handleWrongAnswer = useCallback(
+    (life) => {
+      dispatch({ type: WRONG_ANSWER, delay: 2000 })
+      console.log(life, ';;')
+      dispatch({ type: SET_NEXT_LEVEL })
+    },
+    [life]
+  )
 
   return (
     <div className={styles.container}>
@@ -164,6 +170,7 @@ const Home = () => {
                   optionCount={game.optionCount}
                   answerIndex={game.answerIndex}
                   options={game.options}
+                  life={life}
                   handleCorrect={handleCorrectAnswer}
                   handleWrong={handleWrongAnswer}
                 />

@@ -110,6 +110,18 @@
   font-family: 'Raleway', sans-serif;
 }
 
+.score {
+  line-height: 1.5;
+  font-size: 4rem;
+  padding: 2rem 0;
+  font-family: 'Raleway', sans-serif;
+}
+
+.score span {
+  font-size: 6rem;
+  font-family: 'Righteous', cursive;
+}
+
 .grid {
   display: flex;
   align-items: center;

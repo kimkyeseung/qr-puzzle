@@ -10,6 +10,7 @@ const Stage = ({
   timeLimit,
   isSpeedUp,
   optionCount,
+  life,
   answerIndex,
   options,
   handleCorrect,
@@ -39,7 +40,9 @@ const Stage = ({
 
   useEffect(() => {
     const socket = io()
-    socket.on('wrong-answer', handleWrong)
+    socket.on('wrong-answer', () =>  {
+      handleWrong(life)
+    })
 
     socket.on('correct-answer', handleCorrect)
 

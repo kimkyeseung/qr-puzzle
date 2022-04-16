@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import useActionQueue from 'hooks/useActionQueue'
 import LifePoints from '@/components/LifePoints'
+import GameOver from 'components/GameOver'
 import styles from 'styles/Home.module.css'
 
 const initialState = {
@@ -53,7 +54,8 @@ export default function TestPage() {
         </div>
       ))}
  */}
-      <LifePoints remain={life} />
+      {/* <LifePoints remain={life} /> */}
+      <GameOver score={10}/>
       <button onClick={loseLife}>life - 1</button>
     </div>
   )
