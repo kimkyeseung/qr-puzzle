@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext, useMemo } from 'react'
+import Countdown from './Countdown'
 import { io } from 'socket.io-client'
 import QR from 'components/QR'
 import styles from '../styles/Stage.module.css'
@@ -16,7 +17,7 @@ const Stage = ({
   handleCorrect,
   handleWrong
 }) => {
-  const [deadline, setDeadline] = useState(5)
+  const [deadline, setDeadline] = useState(timeLimit)
   const { gameId, onDevelopment } = useContext(GameContext)
   const { handleSubmit } = useSubmit(gameId)
 
@@ -64,6 +65,8 @@ const Stage = ({
           />
         ))}
       </div>
+      
+      <Countdown time={deadline} />
     </main>
   )
 }
