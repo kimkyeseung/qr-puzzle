@@ -131,12 +131,11 @@ const Home = () => {
   }, [])
 
   const handleWrongAnswer = useCallback(
-    (life) => {
+    () => {
       dispatch({ type: WRONG_ANSWER, delay: 2000 })
-      console.log(life, ';;')
       dispatch({ type: SET_NEXT_LEVEL })
     },
-    [life]
+    []
   )
 
   return (

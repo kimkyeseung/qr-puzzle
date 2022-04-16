@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { io } from 'socket.io-client'
 import QR from 'components/QR'
 import styles from '../styles/Stage.module.css'
@@ -20,30 +20,24 @@ const Stage = ({
   const { gameId, onDevelopment } = useContext(GameContext)
   const { handleSubmit } = useSubmit(gameId)
 
+  const socket = useMemo(() => io(), [])
+
   useEffect(() => {
     const timeoutId = setInterval(() => {
-      if (deadline) {
-        setDeadline(0)
-      } else {
-        console.log('111111111')
-        clearInterval(timeoutId)
-      }
+      deadline ? setDeadline(0) : clearInterval(timeoutId)
     }, 5000)
+    
     return () => clearInterval(timeoutId)
   }, [deadline])
 
   useEffect(() => {
     if (!deadline) {
-      console.log('done')
+      handleWrong()
     }
   }, [deadline])
 
   useEffect(() => {
-    const socket = io()
-    socket.on('wrong-answer', () =>  {
-      handleWrong(life)
-    })
-
+    socket.on('wrong-answer', handleWrong)
     socket.on('correct-answer', handleCorrect)
 
     return () => {
