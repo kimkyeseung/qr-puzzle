@@ -22,7 +22,7 @@ const QR = ({
   const qrType = useMemo(() => (url ? 'url' : 'choice'), [url])
 
   useEffect(() => {
-    QRCode.toCanvas(ref.current, qr, (error) => {
+    QRCode.toCanvas(ref.current, qr, { version: 1 }, (error) => {
       if (error) {
         console.error(error)
       } else {
