@@ -188,7 +188,7 @@ const Home = ({ host }) => {
   )
 }
 
-Home.getServerSideProps = async (ctx) => ({
+export const getServerSideProps = async (ctx) => ({
   props: { host: ctx.req.headers.host || null }
 })
 
