@@ -7,6 +7,7 @@ import Stage from 'components/Stage'
 import AnswerResult from 'components/pending/AnswerResult'
 import GameOver from 'components/GameOver'
 import Ready from 'components/pending/Ready'
+import Footer from 'components/Footer'
 import styles from '../styles/Home.module.css'
 import generator from '@/lib/levelGenerator'
 import { uuid4 } from '@/lib/utils'
@@ -99,12 +100,13 @@ const onDevelopment = process.env.NODE_ENV !== 'production'
 export const GameContext = createContext({
   state: initialState,
   gameId: '',
-  onDevelopment: false
+  onDevelopment: false,
+  host: null
 })
 
 const Tooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
-const Home = () => {
+const Home = ({ host }) => {
   const gameId = useMemo(() => uuid4(), [])
   const [state, dispatch] = useActionQueue(reducer, initialState)
   const { game, life, status, delay } = state
@@ -130,13 +132,10 @@ const Home = () => {
     dispatch({ type: SET_NEXT_LEVEL })
   }, [])
 
-  const handleWrongAnswer = useCallback(
-    () => {
-      dispatch({ type: WRONG_ANSWER, delay: 2000 })
-      dispatch({ type: SET_NEXT_LEVEL })
-    },
-    []
-  )
+  const handleWrongAnswer = useCallback(() => {
+    dispatch({ type: WRONG_ANSWER, delay: 2000 })
+    dispatch({ type: SET_NEXT_LEVEL })
+  }, [])
 
   return (
     <div className={styles.container}>
@@ -147,7 +146,7 @@ const Home = () => {
 
       {!['main', 'over'].includes(status) && <LifePoints remain={life} />}
 
-      <GameContext.Provider value={{ gameId, state, onDevelopment }}>
+      <GameContext.Provider value={{ gameId, state, onDevelopment, host }}>
         {(() => {
           switch (status) {
             case 'main':
@@ -181,22 +180,16 @@ const Home = () => {
           }
         })()}
       </GameContext.Provider>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+      <Footer />
       <Tooltip data-for="start">
         Scan this QR Code to start Game with your phone.
       </Tooltip>
     </div>
   )
 }
+
+Home.getServerSideProps = async (ctx) => ({
+  props: { host: ctx.req.headers.host || null }
+})
 
 export default Home

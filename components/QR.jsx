@@ -1,10 +1,15 @@
-import React, { useRef, useMemo, useState, useEffect, useCallback } from 'react'
-import styles from '../styles/Home.module.css'
+import React, {
+  useRef,
+  useMemo,
+  useContext,
+  useState,
+  useEffect,
+  useCallback
+} from 'react'
 import QRCode from 'qrcode'
 import qs from 'qs'
-import axios from 'axios'
 
-const baseUrl = typeof location !== 'undefined' ? `http://${location.host}` : ''
+const { host } = useContext(GameContext)
 
 const QR = ({
   url,
@@ -18,11 +23,11 @@ const QR = ({
   const ref = useRef()
   const [ready, setReady] = useState(false)
 
-  const qr = useMemo(() => (url ? `${baseUrl}/${url}` : String(value)), [])
+  const qr = useMemo(() => (url ? `${host}/${url}` : String(value)), [])
   const qrType = useMemo(() => (url ? 'url' : 'choice'), [url])
 
   useEffect(() => {
-    QRCode.toCanvas(ref.current, qr, { version: 1 }, (error) => {
+    QRCode.toCanvas(ref.current, qr, (error) => {
       if (error) {
         console.error(error)
       } else {
