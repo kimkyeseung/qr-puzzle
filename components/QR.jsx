@@ -10,7 +10,6 @@ import QRCode from 'qrcode'
 import qs from 'qs'
 import { GameContext } from '../pages/index'
 
-
 const QR = ({
   url,
   query,
@@ -24,6 +23,7 @@ const QR = ({
   const [ready, setReady] = useState(false)
   const { host } = useContext(GameContext)
 
+  console.log({ host })
   const qr = useMemo(() => (url ? `${host}/${url}` : String(value)), [])
   const qrType = useMemo(() => (url ? 'url' : 'choice'), [url])
 

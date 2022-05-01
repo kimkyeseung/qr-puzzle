@@ -1,9 +1,10 @@
 import React, { useContext } from 'react'
-import QR from 'components/QR'
+import dynamic from 'next/dynamic'
 import { GameContext } from '../pages/index'
 import styles from '../styles/Home.module.css'
 
 const Main = () => {
+  const QR = dynamic(() => import('components/QR'), { ssr: false })
   const { onDevelopment, gameId } = useContext(GameContext)
 
   return (
