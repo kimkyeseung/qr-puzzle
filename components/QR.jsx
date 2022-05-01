@@ -40,7 +40,7 @@ const QR = ({
   const handleClick = useCallback(() => {
     if (onDevelopment) {
       qrType === 'url'
-        ? window.open(`${baseUrl}/${url}?${qs.stringify(query)}`)
+        ? window.open(`${url}?${qs.stringify(query)}`)
         : handleSubmit(value, isCorrect)
     }
   }, [url])
