@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useReducer, useMemo } from 'react'
+import { useState, useCallback, useEffect, useReducer } from 'react'
 
 const useActionQueue = (reducer, initialState) => {
   const [queue, setQueue] = useState([])

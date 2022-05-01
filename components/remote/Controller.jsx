@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import styles from 'styles/Remote.module.css'
-import { QrReader } from 'react-qr-reader'
+// import { QrReader } from 'react-qr-reader'
 
 const Controller = () => {
   return (
     <div>
-      <QrReader
+      <h1>Controller</h1>
+      {/* <QrReader
         onResult={(result, error) => {
           if (!!result) {
             setData(result?.text)
@@ -16,7 +17,7 @@ const Controller = () => {
           }
         }}
         style={{ width: '100%' }}
-      />
+      /> */}
     </div>
   )
 }

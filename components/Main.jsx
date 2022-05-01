@@ -12,7 +12,7 @@ const Main = () => {
       <h1 className={styles.title}>Let's play Game!</h1>
 
       <p className={styles.description}>
-        Find the wrong <code className={styles.code}>QR code!</code>
+        Find the diffrent <code className={styles.code}>QR code!</code>
       </p>
 
       <div className={styles.grid}>
